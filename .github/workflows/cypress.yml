@@ -10,6 +10,11 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
+    env:
+      PORT: 5000
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -19,26 +24,32 @@ jobs:
         with:
           node-version: 20
 
-      # 🔥 instalar deps do backend
+      # 📦 instalar deps do backend
       - name: Install backend deps
-        run: |
-          cd backend
-          npm ci
+        working-directory: backend
+        run: npm ci
 
-      # 🔥 subir API
+      # 🚀 subir backend
       - name: Start backend
-        run: |
-          cd backend
-          npm run start &
+        working-directory: backend
+        run: npm run start &
 
       # ⏳ esperar API subir
       - name: Wait for API
-        run: npx wait-on http://localhost:5000
+        run: npx wait-on http://localhost:5000 --timeout 60000
 
-      # 📦 instalar deps do cypress (raiz)
-      - name: Install frontend deps
+      # 📦 instalar deps do projeto (cypress)
+      - name: Install root deps
         run: npm ci
 
-      # 🧪 rodar testes
+      # 🧪 rodar testes Cypress
       - name: Run Cypress
         run: npm test
+
+      # 📁 upload de vídeos (se falhar ou passar)
+      - name: Upload Cypress videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: cypress/videos
