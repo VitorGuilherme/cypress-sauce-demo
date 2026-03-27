@@ -1,31 +1,26 @@
-name: Sauce demo and React Gram API tests
+name: Cypress Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
-  test:
+  cypress-run:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - run: npm ci
+      - name: Instalar dependências
+        run: npm ci
 
-      - name: Start app
-        run: npm run start &
-
-      - name: Wait app
-        run: npx wait-on http://localhost:3000
-
-      - name: Run Cypress
-        run: npx cypress run
-  
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos
+      - name: Rodar Cypress
+        run: npm test
