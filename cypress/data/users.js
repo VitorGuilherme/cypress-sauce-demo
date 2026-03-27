@@ -5,7 +5,7 @@ export const validUser = {
 };
 
 export const invalidUser = {
-  username: "invalid_user",
+  username: "invalid_user123123",
   password: "secret_sauce1",
 };
 
