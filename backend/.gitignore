@@ -1,0 +1,13 @@
+# Dados sensíveis
+.env
+
+# Ignorar todas as imagens
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+
+# Ignorar a pasta de uploads
+/uploads/
