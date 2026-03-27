@@ -5,7 +5,8 @@
   },
   "scripts": {
     "cy:open": "cypress open",
-    "cy:spec": "cypress run --headed --browser chrome --spec"
+    "cy:spec": "cypress run --headed --browser chrome --spec",
+    "test": "cypress run"
   },
   "dependencies": {
     "zod": "^4.3.6"
