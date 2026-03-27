@@ -1,39 +1,44 @@
-name: Cypress CI
+name: Cypress Tests
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
   cypress-run:
-    name: Run Cypress Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      - name: Install dependencies
+      # 🔥 instalar deps do backend
+      - name: Install backend deps
+        run: |
+          cd backend
+          npm ci
+
+      # 🔥 subir API
+      - name: Start backend
+        run: |
+          cd backend
+          npm run start &
+
+      # ⏳ esperar API subir
+      - name: Wait for API
+        run: npx wait-on http://localhost:5000
+
+      # 📦 instalar deps do cypress (raiz)
+      - name: Install frontend deps
         run: npm ci
 
-      - name: Run Cypress tests
+      # 🧪 rodar testes
+      - name: Run Cypress
         run: npm test
-
-      - name: Upload Cypress videos
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore
-          retention-days: 7
